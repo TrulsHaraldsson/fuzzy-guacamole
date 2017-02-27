@@ -1,0 +1,13 @@
+# Compiled sources
+*.pyc
+
+# IntelliJ project settings
+.idea/
+*.iml
+
+# Eclipse project settings
+.project
+.pydevproject
+
+# Data files
+*.csv
