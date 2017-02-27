@@ -16,6 +16,4 @@ def readFile(filename):
         input_labels.append(data[0])
         input_data.append(data[3:])
 
-    return (input_labels, input_data) # return the labels and the data in two lists.
-
-print readFile('DSL-StrongPasswordData.csv')[1][399][0]
+    return input_labels, input_data # return the labels and the data in two lists.
