@@ -7,3 +7,6 @@
 # Eclipse project settings
 .project
 .pydevproject
+
+# Data files
+*.csv
