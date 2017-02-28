@@ -41,7 +41,7 @@ class NearestNeighbor():
             #Now that we have train_sub and valid_sub we do the prediction.
             iterationsOfK = [1,2,4,8]
             listOfAccuracies = []
-            
+            print "labels", len(valid_sub_labels), "training_labels", len(train_sub_labels)
             for k in iterationsOfK:
                 self.train(train_sub_labels, train_sub_data, k)
                 prediction = self.predict(valid_sub_data)
@@ -56,7 +56,6 @@ class NearestNeighbor():
     def predict(self, validation_data):
         """ validation_data is N x D where each row is an example we wish to predict label for """
         num_test = validation_data.shape[0]
-        
         bar = progressbar.ProgressBar(maxval=num_test, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
         
         # lets make sure that the output type matches the input type
