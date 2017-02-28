@@ -53,35 +53,33 @@ class NearestNeighbor():
             
         return np.mean(votingbooth)    
                 
-    def predict(self, validation_data):
-        """ validation_data is N x D where each row is an example we wish to predict label for """
-        num_test = validation_data.shape[0]
-        bar = progressbar.ProgressBar(maxval=num_test, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
+    def predict(self, test_data):
+        num_test = test_data.shape[0]
+        bar = progressbar.ProgressBar(maxval=num_test,
+                                      widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
         
         # lets make sure that the output type matches the input type
-        Ypred = np.zeros(num_test, dtype = self.labels.dtype)
+        predictions = np.zeros(num_test, dtype=self.labels.dtype)
             
         for i in xrange(num_test):
-        
-            #distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1) # L1
-            distances = np.linalg.norm(self.data - validation_data[i,:], axis = 1) # L2
-            Ypred[i] = self.vote(distances)
-            
+            distances = np.linalg.norm(self.data - test_data[i, :], axis=1)  # L2
+            predictions[i] = self.vote(distances)
             bar.update(i+1)
         bar.finish()
         
-        return Ypred
+        return predictions
 
-    # Method vote creates the opportunity to let the distance vectors vote on who they think they are related to (e.g. p1 or p2).
-    # This is because the distances is a random persons data that will be matched to either p1 or p2.
-    def vote(self, distances): 
+    def vote(self, distances):
+        """
+        The method creates the opportunity to let the distance vectors vote on who they think they are related to (e.g. p1 or p2).
+        This is because the distances is a random persons data that will be matched to either p1 or p2.
+        :param distances:
+        :return:
+        """
         distance = np.argsort(distances)
         votes = distance[:self.k]
         prediction = np.zeros(2) # There are two alternatives for the vote, person 1 or person 2.
         for i in votes:
             label = self.labels[int(i)]
             prediction[label] += 1
-
-        finalPrediction = np.argmax(prediction)
-        return finalPrediction
-    
+        return np.argmax(prediction)
