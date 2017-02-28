@@ -1,21 +1,21 @@
 import progressbar
 import numpy as np
 
-class NearestNeighbor(Object):
+class NearestNeighbor():
     def __init__(self):
         pass
     
-    def train(self, labels, data, k): # Store the training data that will be matched from validation data.
+    def train(self, data, labels, k): # Store the training data that will be matched from validation data.
         self.labels = labels
         self.data = data
         self.k = k
     
-    def folds(self, train_labels, train_data, folds):
+    def cross_validation(self, train_labels, train_data, folds):
         
         # By splitting up the data into folds and comparing the different votes they produce, we can get a k best suited for all folds.            
         votingbooth = np.zeros(folds)
-        validation_labels = np.split(train_labels, folds)
-        validation_data = np.split(train_data, folds)
+        label_folds = np.split(train_labels, folds)
+        data_folds = np.split(train_data, folds)
         
         # then to do the cross validation of training and validation folds and get all the best accuracies.
         train_sub_labels = None
@@ -25,12 +25,18 @@ class NearestNeighbor(Object):
         
         for i in xrange(folds): # Crossvalidation i folds
             for j in xrange(folds): # Folder j == i is the validation, rest is training.
-                if(j != i):  
-                    train_sub_labels.append(validation_labels[j])
-                    train_sub_data.append(validation_data[j])
+                if(j != i):
+                    if train_sub_labels is None:
+                        train_sub_labels = label_folds[j]
+                        train_sub_data = data_folds[j]
+                    else:
+                        train_sub_labels = np.append(train_sub_labels, label_folds[j])
+                        train_sub_data = np.append(train_sub_data, data_folds[j], axis=0)
+                    #train_sub_labels.append(validation_labels[j])
+                    #train_sub_data.append(validation_data[j])
                 else: 
-                    valid_sub_labels.append(validation_labels[j])
-                    valid_sub_data.append(validation_data[j])
+                    valid_sub_labels = np.array(label_folds[j])
+                    valid_sub_data = np.array(data_folds[j])
                     
             #Now that we have train_sub and valid_sub we do the prediction.
             iterationsOfK = [1,2,4,8]
@@ -40,6 +46,7 @@ class NearestNeighbor(Object):
                 self.train(train_sub_labels, train_sub_data, k)
                 prediction = self.predict(valid_sub_data)
                 predictionAccuracy = '%f' % (np.mean(prediction == valid_sub_labels) )
+                print "K: ", k, " Acc: ", predictionAccuracy
                 listOfAccuracies.append(predictionAccuracy)
                 
             votingbooth[i] = iterationsOfK[np.argmax(listOfAccuracies)]
@@ -53,13 +60,12 @@ class NearestNeighbor(Object):
         bar = progressbar.ProgressBar(maxval=num_test, widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
         
         # lets make sure that the output type matches the input type
-        Ypred = np.zeros(num_test, dtype = self.ytr.dtype)
+        Ypred = np.zeros(num_test, dtype = self.labels.dtype)
             
         for i in xrange(num_test):
         
             #distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1) # L1
-            distances = np.linalg.norm(self.Xtr - X[i,:], axis = 1) # L2
-            
+            distances = np.linalg.norm(self.data - validation_data[i,:], axis = 1) # L2
             Ypred[i] = self.vote(distances)
             
             bar.update(i+1)
@@ -73,5 +79,10 @@ class NearestNeighbor(Object):
         distance = np.argsort(distances)
         votes = distance[:self.k]
         prediction = np.zeros(2) # There are two alternatives for the vote, person 1 or person 2.
+        for i in votes:
+            label = self.labels[int(i)]
+            prediction[label] += 1
 
+        finalPrediction = np.argmax(prediction)
+        return finalPrediction
     
