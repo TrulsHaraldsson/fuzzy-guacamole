@@ -13,7 +13,6 @@ class NearestNeighbor():
     def cross_validation(self, train_data, train_labels, folds):
         
         # By splitting up the data into folds and comparing the different votes they produce, we can get a k best suited for all folds.            
-        votingbooth = np.zeros(folds)
         label_folds = np.split(train_labels, folds)
         data_folds = np.split(train_data, folds)
         
@@ -23,8 +22,13 @@ class NearestNeighbor():
         valid_sub_labels = None
         valid_sub_data = None
         
-        # print "folds: ", folds, "label_folds: ", len(label_folds), "data_folds: ", len(data_folds)
+        #accuracies
+        votingbooth = []
         
+        #Test different k-values
+        iterationsOfK = [1,2,4,8]
+        
+        # print "folds: ", folds, "label_folds: ", len(label_folds), "data_folds: ", len(data_folds)
         for i in xrange(folds): # Crossvalidation i folds
             for j in xrange(folds): # Folder j == i is the validation, rest is training.
                 if(j != i):
@@ -34,14 +38,11 @@ class NearestNeighbor():
                     else:
                         train_sub_labels = np.concatenate((train_sub_labels, label_folds[j]), axis = 0) #concatenate works fine.
                         train_sub_data = np.concatenate((train_sub_data, data_folds[j]), axis = 0) #concatenate works fine.
-                        #train_sub_labels = np.append(train_sub_labels, label_folds[j])
-                        #train_sub_data = np.append(train_sub_data, data_folds[j]) #axis = 0
                 else: 
                     valid_sub_labels = np.array(label_folds[j])
                     valid_sub_data = np.array(data_folds[j])
                     #print "valid_sub_length: ", len(valid_sub_data), " ", len(valid_sub_labels)
                     
-            iterationsOfK = [1,2,4,8]
             listOfAccuracies = []
             
             print "labels", len(valid_sub_labels), "training_labels", len(train_sub_labels)
@@ -51,11 +52,19 @@ class NearestNeighbor():
                 prediction = self.predict(valid_sub_data)
                 predictionAccuracy = '%f' % (np.mean(prediction == valid_sub_labels) )
                 print "K: ", k, " Acc: ", predictionAccuracy
-                listOfAccuracies.append(predictionAccuracy)
-                   
-            votingbooth[i] = iterationsOfK[np.argmax(listOfAccuracies)]
-                
-        return np.mean(votingbooth)    
+                listOfAccuracies.append(predictionAccuracy)       
+            votingbooth.append(listOfAccuracies)
+            
+        highestAccuracy = 0
+        highestIteration = None
+        
+        for i in iterationsOfK: # adding fold accuracys to see total best value of k.
+            testAccuracy = float(votingbooth[0][i]) + float(votingbooth[1][i]) + float(votingbooth[2][i]) 
+            if(highestAccuracy < testAccuracy): 
+                highestAccuracy = testAccuracy
+                highestIteration = i
+        
+        return highestIteration     
                 
 
     def predict(self, test_data): 
