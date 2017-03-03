@@ -1,5 +1,6 @@
 import progressbar
 import numpy as np
+from collections import Counter
 
 class NearestNeighbor():
     def __init__(self):
@@ -17,20 +18,26 @@ class NearestNeighbor():
         data_folds = np.split(train_data, folds)
         
         # then to do the cross validation of training and validation folds and get all the best accuracies.
-        train_sub_labels = None
-        train_sub_data = None
-        valid_sub_labels = None
-        valid_sub_data = None
+        #train_sub_labels = None
+        #train_sub_data = None
+        #valid_sub_labels = None
+        #valid_sub_data = None
         
         #accuracies
         votingbooth = []
         
         #Test different k-values
-        iterationsOfK = [1,2,4,8]
+        iterationsOfK = [1,2,3,4,5,6,7,8]
         
         # print "folds: ", folds, "label_folds: ", len(label_folds), "data_folds: ", len(data_folds)
         for i in xrange(folds): # Crossvalidation i folds
+            train_sub_labels = None
+            train_sub_data = None
+            valid_sub_labels = None
+            valid_sub_data = None
+        
             for j in xrange(folds): # Folder j == i is the validation, rest is training.
+                
                 if(j != i):
                     if train_sub_labels is None:
                         train_sub_labels = label_folds[j]
@@ -42,7 +49,7 @@ class NearestNeighbor():
                     valid_sub_labels = np.array(label_folds[j])
                     valid_sub_data = np.array(data_folds[j])
                     #print "valid_sub_length: ", len(valid_sub_data), " ", len(valid_sub_labels)
-                    
+                   
             listOfAccuracies = []
             
             print "labels", len(valid_sub_labels), "training_labels", len(train_sub_labels)
@@ -54,39 +61,41 @@ class NearestNeighbor():
                 print "K: ", k, " Acc: ", predictionAccuracy
                 listOfAccuracies.append(predictionAccuracy)       
             votingbooth.append(listOfAccuracies)
-            
+        
+        print "All the tests are now done!\nThe best results will now be calculated for best K value!"
+        
         highestAccuracy = 0
         highestIteration = None
         
         for i in iterationsOfK: # adding fold accuracys to see total best value of k.
-            testAccuracy = float(votingbooth[0][i]) + float(votingbooth[1][i]) + float(votingbooth[2][i]) 
+            #print "i : ", i, " out of : ", len(iterationsOfK)
+            testAccuracy = float(votingbooth[0][i-1]) + float(votingbooth[1][i-1]) + float(votingbooth[2][i-1]) 
+            print "testAccuracy of the folds are : ", testAccuracy
             if(highestAccuracy < testAccuracy): 
                 highestAccuracy = testAccuracy
                 highestIteration = i
-        
-        return highestIteration     
+                #print "new highest accuracy index k ", i
+        return highestIteration   
                 
 
     def predict(self, test_data): 
         num_test = test_data.shape[0]
-        bar = progressbar.ProgressBar(maxval=num_test,
-                                      widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
+        #bar = progressbar.ProgressBar(maxval=num_test,
+        #                              widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
         
         # lets make sure that the output type matches the input type
         predictions = np.zeros(num_test, dtype = self.labels.dtype)
         
-        print"self.data length: ", len(self.data[0]), "test_data length: ", len(test_data[0])    
-        print "type:", type(self.data[0][0]), "type:", type(test_data[0][0])
-        print "self.data: ", self.data[0][0], "test_data: ", test_data[0][0]
-        #print int(self.data[0][0] - test_data[0][0])
-        
+        #print"self.data length: ", len(self.data[0]), "test_data length: ", len(test_data[0])    
+        #print "type:", type(self.data[0][0]), "type:", type(test_data[0][0])
+        #print "self.data: ", self.data[0][0], "test_data: ", test_data[0][0]
         #print float(self.data[0][0]) + float(test_data[0][0])
         
         for i in xrange(num_test):
             distances = np.linalg.norm(self.data - test_data[i,:], axis=1)  # L2
             predictions[i] = self.vote(distances)
-            bar.update(i+1)
-        bar.finish()
+            #bar.update(i+1)
+        #bar.finish()
          
         return predictions
 
@@ -96,10 +105,20 @@ class NearestNeighbor():
             :param distances:
             :return:
         """
+        
         distance = np.argsort(distances)
         votes = distance[:self.k]
-        prediction = np.zeros(2) # There are two alternatives for the vote, person 1 or person 2.
+        #print "votes: ",votes, "with length : ", len(votes)
+        prediction = {} # There are two alternatives for the vote, person 1 or person 2.
         for i in votes:
-            label = self.labels[int(i)]
-            prediction[label] += 1
-        return np.argmax(prediction)
+            label = self.labels[i]
+            prediction[i] = label
+        
+        cnt = Counter()
+        for p in prediction:
+            cnt[p] += 1
+        maxVote = cnt.most_common(1)
+        #print "the person with most votes is : ", maxVote, " - ", maxVote[0][0], " - ", self.labels[maxVote[0][0]]
+        return self.labels[maxVote[0][0]]
+    
+    
