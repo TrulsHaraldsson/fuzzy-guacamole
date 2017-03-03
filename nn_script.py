@@ -24,9 +24,6 @@ np.random.shuffle(data)
 nn = NearestNeighbor()
 #print "data length:", len(data),"\nlabel length:", len(labels)
 print type(data)," ", type(labels)
+k = nn.cross_validation(data, labels, 4)
 
-print nn.cross_validation(data, labels, 4)
-
-
-
-
+print "the highest value k is equal to :", k
