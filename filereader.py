@@ -14,6 +14,7 @@ def readFile(filename):
         data = row[0]
         data = data.split(',')
         input_labels.append(data[0])
-        input_data.append(data[3:])
-
+        data = map(float,data[3:])
+        input_data.append(data)
+          
     return input_labels, input_data # return the labels and the data in two lists.
