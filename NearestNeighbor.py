@@ -120,3 +120,4 @@ class NearestNeighbor:
         maxVote = cnt.most_common(1)  # One is always best. Or at least got most votes (think Trump)..
         
         return self.labels[maxVote[0][0]]
+
