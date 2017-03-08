@@ -15,9 +15,9 @@ class Plotter:
         self.y_data.append(y)
 
     def plot(self, x_label, y_label, title):
-        plt.plot(self.x, self.y)
+        plt.plot(self.x_data, self.y_data)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.suptitle(title)
-        plt.title("Mean Acc. = " + str(np.mean(self.y)) + ", Std. Acc. " + str(np.std(self.y)))
+        plt.title("Mean Acc. = " + str(np.mean(self.y_data)) + ", Std. Acc. " + str(np.std(self.y_data)))
         plt.show()
