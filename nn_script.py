@@ -13,13 +13,9 @@ dm = DataManager()
 dm.pre_process(filename)
 
 # Extract labels and data from two subjects
-<<<<<<< HEAD
-personOne = [0, 400]
-personTwo = [1200, 1600]
-=======
+
 p1 = dm.get_subject(1)
 p2 = dm.get_subject(3)
->>>>>>> 11f6b353f42e859ff5d3bd9f0db517df627805d2
 
 labels_p1 = p1[0]
 data_p1 = p1[1]
