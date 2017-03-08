@@ -1,12 +1,11 @@
 import numpy as np
 from collections import Counter
 
-class NearestNeighbor():
-    #Empty __init__ 
+
+class NearestNeighbor:
     def __init__(self):
         pass
-    
-   
+
     def train(self, data, labels, k): 
         """ Train specific data, labels and k-value.
             :param data:
@@ -16,8 +15,7 @@ class NearestNeighbor():
         self.labels = labels
         self.data = data
         self.k = k
-    
-    
+
     def cross_validation(self, train_data, train_labels, folds):
         """ Cross-validation for training_data, training_labels and for certain folds.
             :param train_data:
@@ -25,17 +23,17 @@ class NearestNeighbor():
             :param folds:
             :return highest accuracy:
         """
-        #Split labels and data into folds.
+        #  Split labels and data into folds.
         label_folds = np.split(train_labels, folds)
         data_folds = np.split(train_data, folds)
         
-        #accuracies
+        #  accuracies
         votingbooth = []
         
-        #Test different k-values
-        iterationsOfK = [1,2,3,4,5,6,7,8]
+        #  Test different k-values
+        iterationsOfK = [1, 2, 3, 4, 5, 6, 7, 8]
         
-        #merge sub-folds into training sets and validation sets.
+        #  merge sub-folds into training sets and validation sets.
         for i in xrange(folds): 
             train_sub_labels = None
             train_sub_data = None
@@ -44,23 +42,23 @@ class NearestNeighbor():
         
             for j in xrange(folds): 
                 
-                if(j != i):
+                if j != i:
                     if train_sub_labels is None:
                         train_sub_labels = label_folds[j]
                         train_sub_data = data_folds[j]
                     else:
-                        train_sub_labels = np.concatenate((train_sub_labels, label_folds[j]), axis = 0) #concatenate works fine.
-                        train_sub_data = np.concatenate((train_sub_data, data_folds[j]), axis = 0) #concatenate works fine.
+                        train_sub_labels = np.concatenate((train_sub_labels, label_folds[j]), axis=0)
+                        train_sub_data = np.concatenate((train_sub_data, data_folds[j]), axis=0)
                 else: 
                     valid_sub_labels = np.array(label_folds[j])
                     valid_sub_data = np.array(data_folds[j])
             
-            #Stores a list of accuracies for each iteration, so it can be calculated in votingbooth's best accuracy.       
+            #  Stores a list of accuracies for each iteration, so it can be calculated in votingbooth's best accuracy.
             listOfAccuracies = []
             
             print "labels", len(valid_sub_labels), "training_labels", len(train_sub_labels)
             
-            #Make a prediction for each iteration.
+            # Make a prediction for each iteration.
             for k in iterationsOfK:
                 self.train(train_sub_data, train_sub_labels, k)
                 prediction = self.predict(valid_sub_data)
@@ -75,35 +73,30 @@ class NearestNeighbor():
         highestAccuracy = 0
         highestIteration = None
         
-        #Calculate the best k-value by adding votingbooth's values together for each fold.
+        #  Calculate the best k-value by adding votingbooth's values together for each fold.
         for i in iterationsOfK: 
             
-            #4 folds add 4 values.
+            #  4 folds add 4 values.
             testAccuracy = float(votingbooth[0][i-1]) + float(votingbooth[1][i-1]) + float(votingbooth[2][i-1]) + float(votingbooth[3][i-1])
             print "testAccuracy of the folds are : ", testAccuracy
-            if(highestAccuracy < testAccuracy): 
+            if highestAccuracy < testAccuracy:
                 highestAccuracy = testAccuracy
                 highestIteration = i
                
         return highestIteration   
-                
-    
+
     def predict(self, vData): 
         """Predict method that actually measures the distances between trained data and the validation data.
            :param vData: 
            :return prediction:
         """
         num_test = vData.shape[0]
-        #bar = progressbar.ProgressBar(maxval=num_test,
-        #                              widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()]).start()
         
         predictions = np.zeros(num_test, dtype = self.labels.dtype)
         
         for i in xrange(num_test):
             distances = np.linalg.norm(self.data - vData[i,:], axis=1)  # L2
             predictions[i] = self.vote(distances)
-            #bar.update(i+1)
-        #bar.finish()
          
         return predictions
 
@@ -124,8 +117,6 @@ class NearestNeighbor():
         cnt = Counter()
         for p in prediction:
             cnt[p] += 1
-        maxVote = cnt.most_common(1) #One is always best. Or at least got most votes (think Trump)..
+        maxVote = cnt.most_common(1)  # One is always best. Or at least got most votes (think Trump)..
         
         return self.labels[maxVote[0][0]]
-    
-    
