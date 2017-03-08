@@ -1,39 +1,31 @@
+import filereader
 from NearestNeighbor import *
-from datahelper import *
 import numpy as np
+
 
 # Just some constants
 LABELS = 0
 DATA = 1
 filename = "DSL-StrongPasswordData.csv"
 
-dm = DataManager()
-
 # Read file
-dm.pre_process(filename)
+result = filereader.readFile(filename)
 
 # Extract labels and data from two subjects
-<<<<<<< HEAD
 personOne = [0, 400]
 personTwo = [1200, 1600]
-=======
-p1 = dm.get_subject(1)
-p2 = dm.get_subject(3)
->>>>>>> 11f6b353f42e859ff5d3bd9f0db517df627805d2
 
-labels_p1 = p1[0]
-data_p1 = p1[1]
+labelsP1 = np.array(result[LABELS][personOne[0]:personOne[1]])
+dataP1 = np.array(result[DATA][personOne[0]:personOne[1]]) 
 
-labels_p2 = p2[0]
-data_p2 = p2[1]
+labelsP2 = np.array(result[LABELS][personTwo[0]:personTwo[1]])
+dataP2 = np.array(result[DATA][personTwo[0]:personTwo[1]]) 
 
-# Training data
-labels = np.concatenate((labels_p1[:300], labels_p2[:300]), axis=0)
-data = np.concatenate((data_p1[:300], data_p2[:300]), axis=0)
+labels = np.concatenate((labelsP1[:300], labelsP2[:300]), axis = 0)
+data = np.concatenate((dataP1[:300], dataP2[:300]), axis = 0)
 
-# Test data
-test_labels = np.concatenate((labels_p1[300:400], labels_p2[300:400]), axis=0)
-test_data = np.concatenate((data_p1[300:400], data_p2[300:400]), axis=0)
+test_labels = np.concatenate((labelsP1[300:400], labelsP2[300:400]), axis = 0)
+test_data = np.concatenate((dataP1[300:400], dataP2[300:400]), axis = 0)
 
 # Shuffle the data
 rng_state = np.random.get_state()
@@ -53,4 +45,5 @@ nn.train(data, labels, k)
 prediction = nn.predict(test_data)
 predictionAccuracy = '%f' % (np.mean(prediction == test_labels) )
 print"Test complete!\nThe accurracy is : ", predictionAccuracy
+
 
