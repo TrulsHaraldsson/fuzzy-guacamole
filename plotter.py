@@ -5,12 +5,19 @@ import numpy as np
 class Plotter:
 
     def __init__(self):
-        pass
+        self.x_data = []
+        self.y_data = []
 
-    def plot(self, ks, accuracies, x_label, y_label, title):
-        plt.plot(ks, accuracies)  # ks are x-axis and accuracies are y-axis
+    def add_x_data(self, x):
+        self.x_data.append(x)
+
+    def add_y_data(self, y):
+        self.y_data.append(y)
+
+    def plot(self, x_label, y_label, title):
+        plt.plot(self.x, self.y)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.suptitle(title)
-        plt.title("Mean Acc. = " + str(np.mean(accuracies)) + ", Std. Acc. " + str(np.std(accuracies)))
+        plt.title("Mean Acc. = " + str(np.mean(self.y)) + ", Std. Acc. " + str(np.std(self.y)))
         plt.show()
