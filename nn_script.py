@@ -12,7 +12,7 @@ result = filereader.readFile(filename)
 
 # Extract labels and data from two subjects
 personOne = [0, 400]
-personTwo = [400, 800]
+personTwo = [1200, 1600]
 
 labelsP1 = np.array(result[LABELS][personOne[0]:personOne[1]])
 dataP1 = np.array(result[DATA][personOne[0]:personOne[1]]) 
