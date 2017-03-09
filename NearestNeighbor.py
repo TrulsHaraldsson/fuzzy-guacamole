@@ -67,7 +67,10 @@ class NearestNeighbor:
                 train_data = np.copy(train_sub_data)
                 valid_data = np.copy(valid_sub_data)
                 prepro.preprocess(train_data, valid_data)
-                preprocessed_train_data, preprocessed_validation_data = prepro.meansub_norm()
+                
+                #Choose method for preprocessing
+                #preprocessed_train_data, preprocessed_validation_data = prepro.meansub_norm()
+                preprocessed_train_data, preprocessed_validation_data = prepro.pca_whitening()
                 
                 #Train
                 self.train(preprocessed_train_data, train_sub_labels, k) #Processed data is used as trained.

@@ -58,7 +58,10 @@ for p in range(len(dm.subjects)):
         test_pData = np.copy(test_data)
         prepro.preprocess(pData, test_pData)
         
-        processed_data, processed_test_data = prepro.meansub_norm()
+        #Choose preprocessing method 
+        #processed_data, processed_test_data = prepro.meansub_norm()
+        processed_data, processed_test_data = prepro.pca_whitening()
+       
        
         # Time to test out test_data/labels
         #nn.train(data, labels, k)
