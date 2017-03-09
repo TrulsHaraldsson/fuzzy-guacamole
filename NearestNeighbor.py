@@ -62,15 +62,16 @@ class NearestNeighbor:
             
             # Make a prediction for each iteration.
             for k in iterationsOfK:
+                
                 #Preprocessing 
                 train_data = np.copy(train_sub_data)
-                prepro.preprocess(train_data)
-                preprocessed_data = prepro.meansub_norm()
+                valid_data = np.copy(valid_sub_data)
+                prepro.preprocess(train_data, valid_data)
+                preprocessed_train_data, preprocessed_validation_data = prepro.meansub_norm()
                 
                 #Train
-                #self.train(train_sub_data, train_sub_labels, k)
-                self.train(preprocessed_data, train_sub_labels, k) #Processed data is used as trained.
-                prediction = self.predict(valid_sub_data)
+                self.train(preprocessed_train_data, train_sub_labels, k) #Processed data is used as trained.
+                prediction = self.predict(preprocessed_validation_data)
                 predictionAccuracy = '%f' % (np.mean(prediction == valid_sub_labels) )
                 #print "K: ", k, " Acc: ", predictionAccuracy
                 listOfAccuracies.append(predictionAccuracy)   

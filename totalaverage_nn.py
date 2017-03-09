@@ -52,16 +52,18 @@ for p in range(len(dm.subjects)):
         nn = NearestNeighbor()
         k = nn.cross_validation(data, labels, 4)
          
-        # Preprocess
+        # Preprocess copied data sets
         prepro = Preprocessor()
         pData = np.copy(data)
-        prepro.preprocess(pData)
-        processed_data = prepro.meansub_norm()
+        test_pData = np.copy(test_data)
+        prepro.preprocess(pData, test_pData)
+        
+        processed_data, processed_test_data = prepro.meansub_norm()
        
         # Time to test out test_data/labels
         #nn.train(data, labels, k)
         nn.train(processed_data, labels, k)
-        prediction = nn.predict(test_data)
+        prediction = nn.predict(processed_test_data)
         predictionAccuracy = '%f' % (np.mean(prediction == test_labels) )
         #print"Test complete!\nThe accurracy is : ", predictionAccuracy, "between subjects : ", p, " and ", pp            
         
