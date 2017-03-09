@@ -1,4 +1,3 @@
-import filereader
 from NearestNeighbor import *
 import numpy as np
 from datahelper import *
@@ -6,19 +5,14 @@ import matplotlib.pyplot as plt
 from plotter import * 
 from numpy.core.defchararray import index
 
-# Just some constants
-LABELS = 0
-DATA = 1
-filename = "DSL-StrongPasswordData.csv"
-
-# Read file
-result = filereader.readFile(filename)
+# DataManager
 dm = DataManager()
 
 # Use Plotter() for plotting data
 plotter = Plotter()
 
 # Read file
+filename = "DSL-StrongPasswordData.csv"
 dm.pre_process(filename)
 indexOfPair = 1
 #Loop the subjects and extract labels and data from two subjects.
@@ -54,13 +48,17 @@ for p in range(len(dm.subjects)):
         
         # Train NN
         nn = NearestNeighbor()
-        #print "data length:", len(data),"\nlabel length:", len(labels)
-        #print type(data)," ", type(labels)
         k = nn.cross_validation(data, labels, 4)
-        #print "the highest value k is equal to :", k, "for testing."
-        
+         
+        # Preprocess
+        prepro = Preprocessor()
+        pData = np.copy(data)
+        prepro.preprocess(pData)
+        processed_data = prepro.meansub_norm()
+       
         # Time to test out test_data/labels
-        nn.train(data, labels, k)
+        #nn.train(data, labels, k)
+        nn.train(processed_data, labels, k)
         prediction = nn.predict(test_data)
         predictionAccuracy = '%f' % (np.mean(prediction == test_labels) )
         #print"Test complete!\nThe accurracy is : ", predictionAccuracy, "between subjects : ", p, " and ", pp            

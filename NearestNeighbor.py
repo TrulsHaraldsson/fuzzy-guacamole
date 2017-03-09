@@ -1,6 +1,6 @@
 import numpy as np
 from collections import Counter
-
+from preprocesser import *
 
 class NearestNeighbor:
     def __init__(self):
@@ -23,6 +23,8 @@ class NearestNeighbor:
             :param folds:
             :return highest accuracy:
         """
+        prepro = Preprocessor()
+        
         #  Split labels and data into folds.
         label_folds = np.split(train_labels, folds)
         data_folds = np.split(train_data, folds)
@@ -60,11 +62,19 @@ class NearestNeighbor:
             
             # Make a prediction for each iteration.
             for k in iterationsOfK:
-                self.train(train_sub_data, train_sub_labels, k)
+                #Preprocessing 
+                train_data = np.copy(train_sub_data)
+                prepro.preprocess(train_data)
+                preprocessed_data = prepro.meansub_norm()
+                
+                #Train
+                #self.train(train_sub_data, train_sub_labels, k)
+                self.train(preprocessed_data, train_sub_labels, k) #Processed data is used as trained.
                 prediction = self.predict(valid_sub_data)
                 predictionAccuracy = '%f' % (np.mean(prediction == valid_sub_labels) )
                 #print "K: ", k, " Acc: ", predictionAccuracy
                 listOfAccuracies.append(predictionAccuracy)   
+                
                     
             votingbooth.append(listOfAccuracies)
         
