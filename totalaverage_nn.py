@@ -1,11 +1,13 @@
 from NearestNeighbor import *
-import numpy as np
 from datahelper import *
-import matplotlib.pyplot as plt
-from plotter import * 
-from numpy.core.defchararray import index
+from plotter import *
 
-# DataManager
+# Just some constants
+LABELS = 0
+DATA = 1
+filename = "DSL-StrongPasswordData.csv"
+
+# Read file
 dm = DataManager()
 
 # Use Plotter() for plotting data
@@ -64,7 +66,8 @@ for p in range(len(dm.subjects)):
         #print"Test complete!\nThe accurracy is : ", predictionAccuracy, "between subjects : ", p, " and ", pp            
         
         plotter.add_x_data(indexOfPair)
-        plotter.add_y_data(predictionAccuracy) 
+        plotter.add_y_data(predictionAccuracy)
+        print indexOfPair # Just to see progress
         indexOfPair += 1
         
             
