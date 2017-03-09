@@ -86,18 +86,18 @@ class MultiLayerPerceptron:
 
         for i in range(self.num_layers-1):
             if i == 0:
-                print "Initializing input layer with size {0}.".format(
-                    layer_config[i]
-                )
+                #print "Initializing input layer with size {0}.".format(
+                #    layer_config[i]
+                #)
                 # Here, we add an additional unit at the input for the bias
                 # weight.
                 self.layers.append(Layer([layer_config[i]+1, layer_config[i+1]],
                                          batch_size,
                                          is_input=True))
             else:
-                print "Initializing hidden layer with size {0}.".format(
-                    layer_config[i]
-                )
+                #print "Initializing hidden layer with size {0}.".format(
+                #    layer_config[i]
+                #)
                 # Here we add an additional unit in the hidden layers for the
                 # bias weight.
                 self.layers.append(Layer([layer_config[i]+1, layer_config[i+1]],
@@ -107,14 +107,14 @@ class MultiLayerPerceptron:
                                          )
                                    )
 
-        print "Initializing output layer with size {0}.".format(
-            layer_config[-1]
-        )
+        #print "Initializing output layer with size {0}.".format(
+        #    layer_config[-1]
+        #)
         self.layers.append(Layer([layer_config[-1], None],
                                  batch_size,
                                  is_output=True,
                                  activation=f_softmax))
-        print "Done!"
+        #print "Done!"
 
     def forward_propagate(self, data):
         # We need to be sure to add bias values to the input
@@ -142,14 +142,14 @@ class MultiLayerPerceptron:
             self.layers[i].W += W_grad
 
     def evaluate(self, train_data, train_labels, test_data, test_labels,
-                 num_epochs=40, eta=0.008, eval_train=False, eval_test=True):
+                 num_epochs=70, eta=0.008, eval_train=False, eval_test=True):
 
         N_train = len(train_labels)*len(train_labels[0])
         N_test = len(test_labels)*len(test_labels[0])
 
         final_acc = 0
 
-        print "Training for {0} epochs...".format(num_epochs)
+        #print "Training for {0} epochs...".format(num_epochs)
         for t in range(0, num_epochs):
             out_str = "[{0:4d}] ".format(t)
 
@@ -179,5 +179,5 @@ class MultiLayerPerceptron:
                                                            float(errs)/N_test)
                 final_acc = 1-float(errs)/N_test
 
-            print out_str
+            #print out_str
         return final_acc
