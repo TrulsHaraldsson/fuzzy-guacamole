@@ -14,7 +14,8 @@ class Preprocessor():
         self.tData -= mean
         self.vData -= mean
         
-        std = np.std(self.tdata, axis = 0) 
+        std = np.std(self.tData, axis = 0) 
+
         self.tData /= std
         self.vData /= std
         
