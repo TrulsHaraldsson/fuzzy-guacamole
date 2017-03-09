@@ -18,9 +18,9 @@ filename = "DSL-StrongPasswordData.csv"
 dm.pre_process(filename)
 indexOfPair = 1
 #Loop the subjects and extract labels and data from two subjects.
-for p in range(3): #len(dm.subjects)):
+for p in range(len(dm.subjects)):
 
-    for pp in range(3): #p + 1, len(dm.subjects)):
+    for pp in range(p + 1, len(dm.subjects)):
         
         # Get person 1 and 2.
         p1 = dm.get_subject(p)
