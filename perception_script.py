@@ -63,5 +63,4 @@ train_data, train_labels, valid_data, valid_labels = prepare_for_back_propagatio
 
 mlp = MultiLayerPerceptron(layer_config=[31, 100, 100, 2], batch_size=batch_size)
 
-mlp.evaluate(train_data, train_labels, valid_data, valid_labels,
-             eval_train=True)
+print mlp.evaluate(train_data, train_labels, valid_data, valid_labels, eval_train=True)
