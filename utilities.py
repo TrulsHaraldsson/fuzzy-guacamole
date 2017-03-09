@@ -4,14 +4,13 @@ Created on 3 Jan 2017
 @author: eao
 '''
 import numpy as np
-import os
 import sys
+
 
 def label_to_bit_vector(labels, nbits):
     bit_vector = np.zeros((labels.shape[0], nbits))
     for i in range(labels.shape[0]):
         bit_vector[i, labels[i]] = 1.0
-
     return bit_vector
 
 
@@ -44,7 +43,7 @@ class Utilities(object):
             if not create_bit_vector:
                 chunked_labels.append(labels[idx:idx+batch_size])
             else:
-                bit_vector = label_to_bit_vector(labels[idx:idx+batch_size], 10)
+                bit_vector = label_to_bit_vector(labels[idx:idx+batch_size], 2)
                 chunked_labels.append(bit_vector)
 
             idx += batch_size

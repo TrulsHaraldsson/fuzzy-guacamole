@@ -23,10 +23,10 @@ dm.pre_process(filename)
 p1 = dm.get_subject(1)
 p2 = dm.get_subject(3)
 
-labels_p1 = p1[0]
+labels_p1 = np.ones(400, dtype=int)
 data_p1 = p1[1]
 
-labels_p2 = p2[0]
+labels_p2 = np.zeros(400, dtype=int)
 data_p2 = p2[1]
 
 # Training data
@@ -61,7 +61,6 @@ batch_size = 1
 
 train_data, train_labels, valid_data, valid_labels = prepare_for_back_propagation(batch_size, data, labels, test_data, test_labels)
 
-#mlp = MultiLayerPerceptron(layer_config=[784, 100, 100, 10], batch_size=batch_size)
 mlp = MultiLayerPerceptron(layer_config=[31, 100, 100, 2], batch_size=batch_size)
 
 mlp.evaluate(train_data, train_labels, valid_data, valid_labels,
