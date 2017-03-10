@@ -7,6 +7,7 @@ from utilities import Utilities as util
 from perceptron import *
 from datahelper import *
 from plotter import *
+from preprocesser import *
 
 
 # Just some constants
@@ -65,9 +66,17 @@ for p in range(len(dm.subjects)):
         np.random.set_state(rng_state)
         np.random.shuffle(data)
 
+        # Preprocess copied data sets
+        prepro = Preprocessor()
+        pData = np.copy(data)
+        test_pData = np.copy(test_data)
+        prepro.preprocess(pData, test_pData)
+        processed_data, processed_test_data = prepro.pca_whitening()  # PCA and Whitening
+        #processed_data, processed_test_data = prepro.meansub_norm()  # Mean sub normalization
+
         batch_size = 100
 
-        train_data, train_labels, valid_data, valid_labels = prepare_for_back_propagation(batch_size, data, labels, test_data, test_labels)
+        train_data, train_labels, valid_data, valid_labels = prepare_for_back_propagation(batch_size, processed_data, labels, processed_test_data, test_labels)
 
         mlp = MultiLayerPerceptron(layer_config=[31, 100, 50, 2], batch_size=batch_size)
 

@@ -142,7 +142,7 @@ class MultiLayerPerceptron:
             self.layers[i].W += W_grad
 
     def evaluate(self, train_data, train_labels, test_data, test_labels,
-                 num_epochs=70, eta=0.008, eval_train=False, eval_test=True):
+                 num_epochs=70, eta=0.004, eval_train=False, eval_test=True):
 
         N_train = len(train_labels)*len(train_labels[0])
         N_test = len(test_labels)*len(test_labels[0])
