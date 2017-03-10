@@ -2,6 +2,8 @@ from NearestNeighbor import *
 from datahelper import *
 import numpy as np
 
+# THIS SCRIPT IS ONLY USED FOR TESTING THE CODE AND NOT EVALUATION
+
 # Just some constants
 LABELS = 0
 DATA = 1

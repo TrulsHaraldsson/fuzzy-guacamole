@@ -26,14 +26,12 @@ plotter = Plotter()
 
 def prepare_for_back_propagation(batch_size, train_data, train_labels, valid_data, valid_labels):
 
-    #print ("Creating data...")
     batched_train_data, batched_train_labels = util.create_batches(train_data, train_labels,
                                                                    batch_size,
                                                                    create_bit_vector=True)
     batched_valid_data, batched_valid_labels = util.create_batches(valid_data, valid_labels,
                                                                    batch_size,
                                                                    create_bit_vector=True)
-    #print ("Done!")
 
     return batched_train_data, batched_train_labels,  batched_valid_data, batched_valid_labels
 

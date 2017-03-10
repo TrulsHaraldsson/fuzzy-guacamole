@@ -58,8 +58,6 @@ class NearestNeighbor:
             #  Stores a list of accuracies for each iteration, so it can be calculated in votingbooth's best accuracy.
             listOfAccuracies = []
             
-            #print "labels", len(valid_sub_labels), "training_labels", len(train_sub_labels)
-            
             # Make a prediction for each iteration.
             for k in iterationsOfK:
                 
@@ -69,20 +67,17 @@ class NearestNeighbor:
                 prepro.preprocess(train_data, valid_data)
                 
                 #Choose method for preprocessing
-                #preprocessed_train_data, preprocessed_validation_data = prepro.meansub_norm()
                 preprocessed_train_data, preprocessed_validation_data = prepro.pca_whitening()
                 
                 #Train
                 self.train(preprocessed_train_data, train_sub_labels, k) #Processed data is used as trained.
                 prediction = self.predict(preprocessed_validation_data)
                 predictionAccuracy = '%f' % (np.mean(prediction == valid_sub_labels) )
-                #print "K: ", k, " Acc: ", predictionAccuracy
                 listOfAccuracies.append(predictionAccuracy)   
                 
                     
             votingbooth.append(listOfAccuracies)
-        
-        #print "All the tests are now done!\nThe best results will now be calculated for best K value!"
+
         
         highestAccuracy = 0
         highestIteration = None
@@ -92,7 +87,6 @@ class NearestNeighbor:
             
             #  4 folds add 4 values.
             testAccuracy = float(votingbooth[0][i-1]) + float(votingbooth[1][i-1]) + float(votingbooth[2][i-1]) + float(votingbooth[3][i-1])
-            #print "testAccuracy of the folds are : ", testAccuracy
             if highestAccuracy < testAccuracy:
                 highestAccuracy = testAccuracy
                 highestIteration = i

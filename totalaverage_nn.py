@@ -59,16 +59,14 @@ for p in range(len(dm.subjects)):
         prepro.preprocess(pData, test_pData)
         
         #Choose preprocessing method 
-        #processed_data, processed_test_data = prepro.meansub_norm()
-        processed_data, processed_test_data = prepro.pca_whitening()
+        #processed_data, processed_test_data = prepro.meansub_norm() # Mean sub normalization
+        processed_data, processed_test_data = prepro.pca_whitening() # PCA and Whitening
        
        
         # Time to test out test_data/labels
-        #nn.train(data, labels, k)
         nn.train(processed_data, labels, k)
         prediction = nn.predict(processed_test_data)
         predictionAccuracy = '%f' % (np.mean(prediction == test_labels) )
-        #print"Test complete!\nThe accurracy is : ", predictionAccuracy, "between subjects : ", p, " and ", pp            
         
         plotter.add_x_data(indexOfPair)
         plotter.add_y_data(predictionAccuracy)

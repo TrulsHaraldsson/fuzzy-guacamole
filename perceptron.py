@@ -15,8 +15,6 @@ def f_sigmoid(X, deriv=False):
 
 def f_relu(X, deriv=False):
     if not deriv:
-        #return np.fmax(X, np.zeros((1, len(X))))
-        #return np.where(X > 0, X, 0.01 + X*0.01)
         return np.where(X > 0, X, 0)
     else:
         return np.where(X > 0, 1, 0)
@@ -86,18 +84,12 @@ class MultiLayerPerceptron:
 
         for i in range(self.num_layers-1):
             if i == 0:
-                #print "Initializing input layer with size {0}.".format(
-                #    layer_config[i]
-                #)
                 # Here, we add an additional unit at the input for the bias
                 # weight.
                 self.layers.append(Layer([layer_config[i]+1, layer_config[i+1]],
                                          batch_size,
                                          is_input=True))
             else:
-                #print "Initializing hidden layer with size {0}.".format(
-                #    layer_config[i]
-                #)
                 # Here we add an additional unit in the hidden layers for the
                 # bias weight.
                 self.layers.append(Layer([layer_config[i]+1, layer_config[i+1]],
@@ -107,9 +99,6 @@ class MultiLayerPerceptron:
                                          )
                                    )
 
-        #print "Initializing output layer with size {0}.".format(
-        #    layer_config[-1]
-        #)
         self.layers.append(Layer([layer_config[-1], None],
                                  batch_size,
                                  is_output=True,
@@ -149,7 +138,6 @@ class MultiLayerPerceptron:
 
         final_acc = 0
 
-        #print "Training for {0} epochs...".format(num_epochs)
         for t in range(0, num_epochs):
             out_str = "[{0:4d}] ".format(t)
 
@@ -179,5 +167,4 @@ class MultiLayerPerceptron:
                                                            float(errs)/N_test)
                 final_acc = 1-float(errs)/N_test
 
-            #print out_str
         return final_acc

@@ -18,10 +18,6 @@ class Utilities(object):
 
     @staticmethod
     def test():
-
-        # dir_path = os.path.dirname(os.path.realpath(__file__))
-        # dir_path = os.getcwd()
-        # print("Util.Test is done. DIR=", dir_path)
         return
 
     @staticmethod
